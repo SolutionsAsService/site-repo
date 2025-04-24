@@ -1,0 +1,14 @@
+<!-- Email Contact Form -->
+  <form action="/api/contact" method="POST" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+    <input type="text" name="name" placeholder="Your Name" required
+           class="p-4 form-input-style rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-600" />
+    <input type="email" name="email" placeholder="Your Email" required
+           class="p-4 form-input-style rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-600" />
+    <input type="text" name="subject" placeholder="Subject"
+           class="p-4 form-input-style rounded-lg md:col-span-2 focus:outline-none focus:ring-2 focus:ring-cyan-600" />
+    <textarea name="message" placeholder="Message" rows="5" required
+              class="p-4 form-input-style rounded-lg md:col-span-2 resize-none focus:outline-none focus:ring-2 focus:ring-cyan-600"></textarea>
+    <button type="submit"
+            class="submit-button py-3 px-6 rounded-lg font-semibold md:col-span-2 transition text-center">
+      Send Message
+    </button>
