@@ -433,3 +433,13 @@ The panel's blind spot was the colour. Eight seats judged access, claims, type a
 - **Words (verbatim):** "Site repo is b plus good design boring colors do a new color version in this repo"
 - **What it rewards:** the design (kit, sprue, Bare, sandbox, registry).
 - **What it punishes:** the palette (beige, orange, blue). The follow-up is website-toolkit.
+
+### Addendum (after close): Mace R2 filed late
+
+Critic: Inclusion (Mace) filed R2 after the run was closed: panel/R2/crit_inc_mace.md.
+- **Verdict:** OBJECT.
+- R1 F1 is fixed: hero-statement ring 15–21:1 in all themes.
+- New F2: the part pages' Copy button ring is 1.00:1 (ink on the ink code block). The site pages were not focus-probed.
+- **Resolution:** DEFERRED here, fixed in website-toolkit (M6: two-tone rings; the site pages are focus-probed).
+
+The ledger row imported before this addendum does not include Mace R2.
