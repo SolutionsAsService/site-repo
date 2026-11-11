@@ -13,5 +13,5 @@ This repository is a library of website parts. To build a page from it:
 
 - One file in `parts/` named `<id>.html`, starting with `<!--sr:part {json} -->`. The JSON needs `id`, `title`, `category` (navigation, hero, content, forms, places, dividers, footers), `summary`, `slots`, `needs` and `a11y`.
 - Scope every selector to `.sr-<short-name>`. Use only `var(--sr-…, fallback)` for colour, radius, space and fonts.
-- Every slot named in the header must exist as `data-slot` in the markup; the build fails otherwise.
+- Every slot named in the header must exist as a `data-slot` value in the markup (one element can carry several, space-separated: `data-slot="link current"`); the build fails otherwise.
 - Run `npm run all`. The part must pass the check at 375, 768 and 1280 px in all 4 themes.

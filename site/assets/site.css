@@ -53,11 +53,18 @@ main { padding: 0 var(--gut) 56px; max-width: 1480px; margin: 0 auto; }
 .hero { display: grid; grid-template-columns: minmax(0, 340px) minmax(0, 1fr); gap: 20px 32px; padding-top: 22px; align-items: start; }
 .hero h1 { font-size: clamp(32px, 3.6vw, 50px); }
 .hero .lede { font-size: 16px; }
-.themes { display: flex; flex-wrap: wrap; gap: 6px; margin: 0 0 16px; }
-.themes::before { content: "Theme every part:"; width: 100%; font: 600 12px/1 var(--mono); text-transform: uppercase; letter-spacing: .06em; color: var(--muted); }
+.themes, .bare { display: flex; flex-wrap: wrap; gap: 6px; }
+.themes::before, .bare::before { width: 100%; font: 600 12px/1 var(--mono); text-transform: uppercase; letter-spacing: .06em; color: var(--muted); }
+.themes::before { content: "Theme every part"; }
+.bare::before { content: "View"; }
+.bare button { font: 600 14px/1 var(--body); color: var(--ink); background: var(--paper); border: 2px solid var(--ink); border-radius: 6px; padding: 8px 12px; min-height: 36px; cursor: pointer; }
+.bare button[aria-pressed="true"] { background: var(--ink); color: var(--paper); }
+.gloss { font-size: 13.5px; color: var(--muted); margin: 0 0 14px; }
+.lede-short { display: none; }
 .assembly { list-style: none; counter-reset: a; margin: 0; padding: 0; border-top: 2px solid var(--ink); }
 .assembly li { counter-increment: a; border-bottom: 1px solid var(--rule); }
-.assembly a { display: flex; gap: 10px; align-items: baseline; padding: 9px 0; text-decoration: none; }
+.assembly a { display: grid; grid-template-columns: 22px auto 1fr; gap: 10px; align-items: baseline; padding: 8px 0; text-decoration: none; }
+.assembly a span { color: var(--muted); font-size: 14.5px; }
 .assembly a::before { content: counter(a); font: 700 13px/1 var(--mono); color: var(--paper); background: var(--ink); border-radius: 50%; width: 22px; height: 22px; display: inline-grid; place-items: center; flex: none; transform: translateY(4px); }
 .assembly a:hover b { text-decoration: underline; }
 
@@ -71,16 +78,21 @@ main { padding: 0 var(--gut) 56px; max-width: 1480px; margin: 0 auto; }
 .runner-parts { position: relative; z-index: 1; list-style: none; margin: 0; padding: 0; flex: 1; display: grid; grid-template-columns: repeat(var(--n, 2), minmax(0, 1fr)); gap: 10px; }
 .runner[data-group="C"] .runner-parts { --n: 4; }
 .runner[data-group="E"] .runner-parts, .runner[data-group="G"] .runner-parts { --n: 1; }
-.piece { position: relative; }
+.piece { position: relative; overflow: visible !important; }
+.piece-win { border-radius: 0 0 6px 6px; }
 /* the gate: a little nub joining piece to runner */
-.piece::before { content: ""; position: absolute; left: -10px; top: 50%; width: 10px; height: 4px; margin-top: -2px; background: var(--sprue); }
-.piece-link { display: block; text-decoration: none; background: var(--paper); border: 2px solid var(--ink); border-radius: 8px; overflow: hidden; }
-.piece-link:hover { box-shadow: 4px 4px 0 var(--ink); transform: translate(-2px, -2px); }
-.piece-link:focus-visible { outline: 3px solid var(--focus); outline-offset: 3px; }
-.piece-tab { display: block; font: 500 12px/1.2 var(--body); padding: 5px 7px; border-bottom: 2px solid var(--ink); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; background: var(--paper); }
-.piece-tab b { font: 700 12px/1 var(--mono); background: var(--ink); color: var(--paper); padding: 2px 4px; border-radius: 3px; margin-right: 3px; }
+.piece::before { content: ""; position: absolute; z-index: 1; left: -10px; top: 50%; width: 10px; height: 4px; margin-top: -2px; background: var(--sprue); }
+.piece { display: flex; flex-direction: column; background: var(--paper); border: 2px solid var(--ink); border-radius: 8px; overflow: hidden; }
+.piece:hover { box-shadow: 4px 4px 0 var(--ink); }
+.piece:focus-within { outline: 3px solid var(--focus); outline-offset: 3px; }
+.piece-link { display: block; font: 500 12px/1.25 var(--body); padding: 5px 7px; border-bottom: 2px solid var(--ink); background: var(--paper); text-decoration: none; min-height: 24px; }
+.piece-link:focus-visible { outline: none; }
+.piece-link::after { content: ""; position: absolute; inset: 0; z-index: 2; }
+.piece-link b { font: 700 12px/1 var(--mono); background: var(--ink); color: var(--paper); padding: 2px 4px; border-radius: 3px; margin-right: 3px; }
 .piece-win { display: block; position: relative; height: 66px; overflow: hidden; background: #fff; }
-.piece-win iframe { position: absolute; left: 0; top: 0; width: 1200px; height: 600px; border: 0; transform-origin: 0 0; transform: scale(var(--s, .16)); pointer-events: none; }
+.piece-win iframe { position: absolute; left: 0; top: 0; height: 600px; border: 0; transform-origin: 0 0; transform: scale(var(--s, .16)); pointer-events: none; }
+.sprue-bar { grid-column: 1 / -1; order: -3; display: flex; flex-wrap: wrap; align-items: end; gap: 6px 18px; padding: 0 2px 4px; }
+.sprue-bar .gloss { flex: 1 1 260px; margin: 0; }
 .sprue-more { grid-column: 1 / -1; justify-self: end; font: 700 14px/1 var(--mono); text-decoration: none; background: var(--ink); color: var(--paper); padding: 8px 12px; border-radius: 6px; display: none; }
 
 .why { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 28px; margin-top: 48px; border-top: 2px solid var(--ink); padding-top: 22px; }
@@ -100,7 +112,12 @@ main { padding: 0 var(--gut) 56px; max-width: 1480px; margin: 0 auto; }
 .pcards a .pcode { justify-self: start; }
 .pcards a span:last-child { color: var(--muted); font-size: 14.5px; }
 
-.chk { font-size: 14.5px; padding: 8px 12px; border-left: 5px solid var(--muted); background: var(--paper-2); max-width: 90ch; }
+.chk { font-size: 14.5px; padding: 8px 12px; border-left: 5px solid var(--muted); background: var(--paper-2); max-width: 65ch; }
+.stage-note { font-size: 13px; color: var(--muted); margin: 0; padding: 8px 14px 12px; max-width: 80ch; }
+.xray small { font-weight: 400; color: var(--muted); }
+.steps-h { padding-left: 1.4em; }
+.steps-h li::marker { font: 700 22px var(--mono); color: var(--sprue-deep); }
+.steps-h h2 { margin: 22px 0 6px; }
 .chk.ok { border-color: #1d7a3a; }
 .chk.bad { border-color: #b3261e; }
 
@@ -130,7 +147,7 @@ table.data { border-collapse: collapse; width: 100%; font-size: 14.5px; }
 .tcard p { margin: 0 0 8px; }
 .parts-used { display: flex; flex-wrap: wrap; gap: 4px; }
 .acts { display: flex; flex-wrap: wrap; gap: 8px; }
-.prose { max-width: 76ch; }
+.prose { max-width: 65ch; }
 .prose h2 { margin-top: 26px; }
 
 /* ---------------------------------------------------------- sandbox */
@@ -170,15 +187,23 @@ table.data { border-collapse: collapse; width: 100%; font-size: 14.5px; }
   .hero { padding-top: 12px; gap: 12px; }
   .hero h1 { font-size: 30px; margin-bottom: 8px; }
   .hero .lede { display: none; }
+  .lede-short { display: block; order: 1; margin: 0; font-size: 14.5px; color: var(--muted); }
+  .sprue-bar .gloss { display: none; }
+  .sprue-bar { gap: 6px 10px; }
+  .themes::before, .bare::before { display: none; }
+  .themes button, .bare button { padding: 6px 9px; min-height: 32px; font-size: 13px; }
+  .piece-win { height: 38px; }
+  .hero h1 { margin-bottom: 4px; font-size: 27px; }
+  .hero { gap: 9px; }
+  .sprue { gap: 6px !important; padding: 6px !important; }
+  .piece-link { font-size: 12px; padding: 4px 6px; }
   .hero-text { display: contents; }
   .hero-text .kicker { order: 0; margin-bottom: 0; } .hero-text h1 { order: 1; }
   .sprue { order: 2; grid-template-columns: repeat(2, minmax(0, 1fr)); border-width: 8px; padding: 8px; gap: 8px; }
-  .themes { order: 3; margin: 0; }
-  .assembly { order: 4; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 0 6px; border-top-width: 2px; }
-  .assembly li { border-bottom: 0; }
-  .assembly a { padding: 8px 0; font-size: 14px; gap: 5px; min-height: 40px; align-items: center; }
-  .assembly a::before { display: none; }
-  .assembly a { justify-content: center; border: 2px solid var(--ink); border-radius: 6px; margin-top: 8px; }
+
+  .assembly { order: 4; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 12px; }
+  .assembly a { grid-template-columns: 18px 1fr; padding: 4px 0; min-height: 28px; font-size: 14px; line-height: 1.25; gap: 6px; align-items: center; }
+  .assembly a::before { transform: none; width: 18px; height: 18px; font-size: 11px; }
   .assembly a span { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
   .runner[data-group="C"] { grid-column: auto; order: 0; }
   .runner[data-group="A"], .runner[data-group="B"] { order: 0; }

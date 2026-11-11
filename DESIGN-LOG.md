@@ -263,3 +263,116 @@ Consequence: Old URLs disappear; there were no pages linking to them.
 Fence: n/a.
 Frontier effect: Residual diff.
 Mode field: n/a.
+
+---
+
+## Panel, WHOLE, round R1 (commit a82970b; panel/R1/*.png; evidence panel/R1/evidence.md)
+
+8 of 8 filed.
+
+| Critic | Anchor used | Observed in the work | Verdict | Requested change |
+|---|---|---|---|---|
+| Critic: Evidence (Cairo) | How Charts Lie | Re-ran the check: 11/11 and 18/18, reproduced exactly. Bare paste passes; a stricter run passes; the hashes match parts/. But Playwright is not a declared dependency (hard-coded fallback path); the check line claims focus "in 4 themes" (it probes 1) and "24 px or more" (the probe allows spacing); a stale comment; slot exemptions undocumented; the registry hash check compares output with itself | OBJECT | Declare Playwright; make the published line say what the probe does; fix the comment; document the exemptions; hash against parts/ |
+| Critic: Usability (Krug) | Don't Make Me Think | Five-second test passes for both users; C5 traced to its page; llms.txt and the registry usable. Phone doors are verbs without objects; phone tab titles truncated; "sprue" is jargon; Copy below the fold on part pages; tiny parts look empty | PASS | Objects under the verbs; two-line titles; plain words; Copy in the toolbar; crop the miniatures |
+| Critic: Provocateur (Debord) | Society of the Spectacle | Core promises hold (bare render 18/18, Copy equals source 18/18, sandbox copy equals preview). But the nav-bar phone menu has no slots; slot exemptions contradict AGENTS.md; template links point to garden pages that do not exist; "24 px or more" overstates the probe; the preview adds a reset | OBJECT | Slot the menu links; document or drop the exemptions; real template anchors; quote the probe; label the reset |
+| Critic: Inclusion (Holmes) | Mismatch | R0 F1–F7 resolved. Phone hides the lede; 18 live documents inside links (invalid HTML and noise for screen readers); truncated names; unglossed "sprue", "X-ray", "tokens" | OBJECT | Lede and door text on phone; previews inert/aria-hidden and outside the link; wrap names; inline glosses |
+| Critic: Inclusion (Mace) | Principles of Universal Design | 37 landing stops, all with a 3 px ring; no trap in the sandbox; forced colours fixed. **hero-statement's focus ring is accent on the ink band: 1.00:1 in Slab, 1.78 Night, 2.68 Paper.** The probe ran focus in one theme only | OBJECT | A ring of 3:1 or better in every theme; probe focus contrast in all themes |
+| Critic: Craft (Bringhurst) | Elements of Typographic Style | The R0 faults are gone (measure, leading, letterspaced caps, curly quotes, tabular figures). Truncated phone names; the .chk note is ~110 characters per line; the hero em breaks badly; ~12 sizes; two numbering systems | PASS | Wrap names; 65ch; `box-decoration-break: clone`; one scale; drop "No." |
+| Critic: Provocateur (Shklovsky) | Art as Technique | The sprue is a real device; X-ray is the strongest and is buried (off, below the fold, smallest in the sandbox) | OBJECT | A bare/built switch on the sprue, on the first screen, X-raying all 18 at once |
+| Critic: Erasure (Kelly Walters) | Black, Brown + Latinx Design Educators | R0 F1–F3 resolved, F4 partly. The agent is taught step by step but a human beginner is not; phone doors are bare verbs; part defaults are one business; no named learner | OBJECT | A "Paste your first part" page; full door labels; varied defaults; a named learner and a walkthrough |
+
+**Andon:** none.
+
+### Resolutions R1
+
+| Finding | Resolution |
+|---|---|
+| Mace: hero-statement focus ring 1.00:1 in Slab | ADAPT (M13): ring in `--sr-paper` with 3 px offset (on the ink band), measured in all 4 themes |
+| Mace + Cairo: focus probed in one theme only | ADAPT (M13): focus and focus-ring contrast (≥ 3:1 against the surface behind the element) probed in every theme |
+| Cairo: Playwright undeclared; hard-coded path | ADAPT (M13): `playwright` in devDependencies, no machine path; README says so |
+| Cairo + Debord: the published check line overstates the probes | ADAPT (M13): the line quotes the probes' own wording |
+| Cairo: a stale focus-within comment | ADAPT (M13): comment corrected |
+| Cairo + Debord: slot exemptions contradict AGENTS.md | ADAPT (M13): exemptions removed; the three attribute slots are marked on their elements (`data-slot` on the link with aria-current, the featured plan and the brand link) |
+| Cairo: the registry hash check compares output with itself | ADAPT (M13): it hashes parts/ and compares with the registry |
+| Debord: nav-bar phone menu not slotted | ADAPT (M13): menu links carry `data-slot="link"` |
+| Debord: template links point to nonexistent pages | ADAPT (M13): template nav links point to sections that exist on that page (ids added by the template) |
+| Debord: the preview adds a reset not in the copy | ADAPT (M13): the part page says "previewed with tokens.css and a 3-line reset (shown in the sandbox)" |
+| Holmes: iframes inside links | ADAPT (M12): the preview iframes move outside the link, `aria-hidden` and `inert`; the link is the tab, stretched over the tile for the pointer |
+| Holmes + Krug + Bringhurst + Walters: truncated names, bare phone verbs, hidden lede, jargon | ADAPT (M12): names wrap to two lines; the doors keep their objects at every width; a one-line lede on phone; "sprue" glossed in place |
+| Krug: Copy below the fold | ADAPT (M12): "Copy code" in the part toolbar |
+| Krug: empty-looking miniatures | ADAPT (M12): small parts render at a narrower virtual width, so they fill their window |
+| Bringhurst: measure, hero em, "No." | ADAPT (M12): `.chk` and `.prose` at 65ch; `box-decoration-break: clone` with the period inside; "No. nn" dropped |
+| Bringhurst: twelve sizes, no scale | DEFERRED: Open frontier; sizes consolidated where touched |
+| Shklovsky: X-ray buried | ADAPT (M10, BREAK, S4 push): a "Built / Bare" switch on the sprue X-rays all 18 pieces at once on the first screen |
+| Walters + Holmes: no human onboarding | ADAPT (M11): a "Start here" page (paste your first part, in plain words, with "head" and "token" glossed), linked from the landing |
+| Walters: part defaults are one business | OVERRULE (SSOT, Adaptive MAYA): the parts share one sample business so they compose into a coherent page and template overrides stay readable. The variety lives in the 4 templates, which the landing and Start here now link directly |
+| Walters: no named learner, no walkthrough | DEFERRED: the learner is named in M11, but no walkthrough with a real person was possible in this run; recorded on the Open frontier, not claimed |
+
+## Move M10: Bare / Built on the sprue  (BREAK; S4 push)
+Depends on: M5, M6
+Anchors: Breaker Learning from Las Vegas (Venturi, Scott Brown, Izenour) | Counterpoint Form Follows Function (Louis Sullivan)
+Intent: Next to "Theme every part", a two-state switch, Built / Bare. Bare X-rays all 18 miniatures at once: styles stripped, tags and slots labelled.
+Formal argument: Shklovsky R1: the strongest device was hidden. Sullivan's counterpoint now governs the first screen: function shown alongside the decorated shed.
+Alternatives rejected:
+- (a) An X-ray demo below the fold. Rejected: still buried.
+- (b) Default to Bare. Rejected: the five-second test needs the built parts first (Krug, MAYA).
+Consequence: X-ray styles are injected into same-origin preview iframes.
+Fence: n/a.
+Frontier effect: a probe that the switch changes all 18 and switches back.
+Mode field: The advanced pole is the whole kit seen bare in one click. The acceptable pole is a labelled two-state switch, default Built.
+
+## Move M11: Start here, for a person  (KEEP-THE-RULE)
+Depends on: M3
+Anchors: Stance Design as Art (Bruno Munari) | Rule WCAG 2.2 Contrast and Perceivability (W3C)
+Intent: A page that walks a first-time builder through pasting one part into a blank page, in plain words. It explains what the head is, what tokens are and what a slot is, and ends with the sandbox and templates.
+Named learner (Walters): Amara, who keeps her bakery's site in a free host's HTML editor. She has never used a build tool, and reads on her phone between orders.
+Formal argument: Munari: design that is used. Walters: a resource teaches when a learner without insider context can enter it.
+Alternatives rejected:
+- (a) A video. Rejected: not searchable, not for everyone.
+- (b) A longer README. Rejected: people do not see it.
+Consequence: One more page in the nav ("Start").
+Fence: n/a.
+Frontier effect: a walkthrough with a real learner (deferred).
+Mode field: The advanced pole is n/a. The acceptable pole is the whole point.
+
+## Move M12: Landing and part-page repairs  (KEEP-THE-RULE)
+Depends on: M5, M2
+Anchors: Rule Grid Systems in Graphic Design (Josef Müller-Brockmann) (reached from Gerstner's programme) | Rule WCAG 2.2 Contrast and Perceivability (W3C)
+Intent:
+- Preview iframes leave their links and become inert.
+- Tab names wrap.
+- The doors keep their objects at every width.
+- A one-line lede on the phone; "sprue" glossed.
+- Copy in the part toolbar.
+- Narrow virtual widths for small parts.
+- 65ch measures; the hero em cloned across lines; "No." dropped.
+Formal argument: Each item is a measured defect from R1.
+Alternatives rejected:
+- (a) Static screenshots for the miniatures. Rejected: they lose the live theme switch, and M10.
+- (b) Fewer pieces on desktop. Rejected: the sprue must summarize all 18.
+Consequence: The phone first screen grows. It must be re-measured against 812.
+Fence: n/a.
+Frontier effect: the first-screen probe.
+Mode field: The advanced pole is unchanged. The acceptable pole is stronger.
+
+## Move M13: Make every claim match its probe  (KEEP-THE-RULE)
+Depends on: M7
+Anchors: Rule WCAG 2.2 Contrast and Perceivability (W3C)
+Intent:
+- Fix the hero-statement focus ring.
+- Probe focus and ring contrast in every theme.
+- Declare Playwright.
+- Quote the probes on part pages.
+- Drop the slot exemptions.
+- Hash parts/ in the registry check.
+- Slot the phone menu.
+- Real anchors in the templates.
+- Label the preview reset.
+Formal argument: Cairo/Debord: a published check must say what it measured.
+Alternatives rejected:
+- (a) Weaken the claims only. Rejected: Mace found a real defect.
+- (b) Stronger claims only. Rejected: the probe defines them.
+Consequence: The check takes longer (focus in 4 themes).
+Fence: n/a.
+Frontier effect: a re-run of the check, then R2.
+Mode field: n/a.

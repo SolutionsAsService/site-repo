@@ -2,7 +2,7 @@
 // If build/checks.json exists (written by npm run check) its results are published on part pages and in registry.json.
 import fs from 'node:fs';
 import path from 'node:path';
-import { ROOT, GROUPS, loadAll, tokensFor, documentFor, partBody, esc } from './lib.mjs';
+import { ROOT, GROUPS, loadAll, tokensFor, documentFor, partBody, templateBodies, esc } from './lib.mjs';
 
 const OUT = path.join(ROOT, 'site');
 const SITE_URL = 'https://site-repo.shadw.app';
@@ -26,7 +26,7 @@ for (const p of parts) {
 }
 
 // ------------------------------------------------------------------ shell
-const NAV = [['index.html', 'Kit'], ['parts/index.html', 'Parts'], ['sandbox.html', 'Sandbox'], ['templates/index.html', 'Templates'], ['agents.html', 'For agents']];
+const NAV = [['index.html', 'Kit'], ['start.html', 'Start'], ['parts/index.html', 'Parts'], ['sandbox.html', 'Sandbox'], ['templates/index.html', 'Templates'], ['agents.html', 'For agents']];
 function page({ file, title, desc, body, current, depth = 0, scripts = ['site.js'], data = null }) {
   const up = '../'.repeat(depth);
   const nav = NAV.map(([href, label]) => `<a href="${up}${href}"${href === current ? ' aria-current="page"' : ''}>${label}</a>`).join('');
@@ -78,18 +78,19 @@ function checkLine(p) {
   if (!checks || !checks.parts[p.id]) return '<p class="chk none">Not yet checked. Run <code>npm run check</code>.</p>';
   const c = checks.parts[p.id];
   const ok = c.pass;
-  return `<p class="chk ${ok ? 'ok' : 'bad'}"><b>${ok ? 'Passes' : 'Fails'}</b> the site check at ${checks.widths.join(', ')} px in ${checks.themes.length} themes: no sideways scroll, labelled fields, targets of 24 px or more, a visible focus ring after a real Tab, text contrast of 4.5:1 or better. ${ok ? '' : `Failures: ${esc(c.failures.slice(0, 4).join('; '))}`}</p>`;
+  return `<p class="chk ${ok ? 'ok' : 'bad'}"><b>${ok ? 'Passes' : 'Fails'}</b> the check, rendered alone at ${checks.widths.join(', ')} px in each of the ${checks.themes.length} themes: ${esc(checks.probes.join('; '))}. ${ok ? '' : `Failures: ${esc(c.failures.slice(0, 4).join('; '))}`}</p>`;
 }
 
 // ------------------------------------------------------------------ landing: the sprue
 {
   const runners = GROUPS.map(g => {
     const gp = parts.filter(p => p.category === g.id);
+    const VW = { 'divider-or': 520, 'divider-mark': 520, breadcrumb: 600 };
     return `<div class="runner" data-group="${g.letter}">
 <span class="runner-tag" aria-hidden="true">${g.letter}</span>
 <ul class="runner-parts" aria-label="${esc(g.name)}">${gp.map((p, i) => `<li class="piece${i ? ' piece--more' : ''}">
-<a href="parts/${p.id}.html" class="piece-link"><span class="piece-tab"><b>${p.code}</b> ${esc(p.title)}</span>
-<span class="piece-win"><iframe src="preview/${p.id}.html" title="${esc(p.title)} (miniature preview)" tabindex="-1" loading="${i === 0 ? 'eager' : 'lazy'}" scrolling="no"></iframe></span></a></li>`).join('')}</ul>
+<a href="parts/${p.id}.html" class="piece-link"><b>${p.code}</b> ${esc(p.title)}</a>
+<span class="piece-win" aria-hidden="true"><iframe src="preview/${p.id}.html" title="" tabindex="-1" inert data-vw="${VW[p.id] || 1200}" style="width:${VW[p.id] || 1200}px" loading="${i === 0 ? 'eager' : 'lazy'}" scrolling="no"></iframe></span></li>`).join('')}</ul>
 </div>`;
   }).join('');
   const themeBtns = Object.entries(themes).map(([k, t], i) => `<button type="button" class="tbtn" data-theme="${k}" aria-pressed="${i === 0}">${esc(t.label)}</button>`).join('');
@@ -98,16 +99,22 @@ function checkLine(p) {
   <div class="hero-text">
     <p class="kicker">A kit of parts for websites</p>
     <h1>${N} parts. Snap off what you need.</h1>
+    <p class="lede-short">Copy-paste website parts in plain HTML and CSS.</p>
     <p class="lede">Plain HTML and CSS you can paste into any page. Every part is numbered, themed by ${Object.keys(tokensFor(tokensCss, themes, null).match(/--sr-[a-z-]+/g).reduce((a, k) => (a[k] = 1, a), {})).length} tokens, labelled for screen readers, and checked at three widths. People browse it here; agents fetch it from <a href="registry.json">registry.json</a>.</p>
-    <div class="themes" role="group" aria-label="Theme for every part">${themeBtns}</div>
     <ol class="assembly">
-      <li><a href="parts/index.html"><b>Pick</b> <span>parts from the sprue</span></a></li>
-      <li><a href="sandbox.html"><b>Assemble</b> <span>them in the sandbox</span></a></li>
-      <li><a href="templates/index.html"><b>Start</b> <span>from a template (${templates.length})</span></a></li>
-      <li><a href="agents.html"><b>Fetch</b> <span>as an agent</span></a></li>
+      <li><a href="start.html"><b>Start here</b> <span>paste your first part in five minutes</span></a></li>
+      <li><a href="parts/index.html"><b>Pick a part</b> <span>off the frame, all ${N} with live previews</span></a></li>
+      <li><a href="sandbox.html"><b>Assemble a page</b> <span>in the sandbox, then copy it</span></a></li>
+      <li><a href="templates/index.html"><b>Copy a template</b> <span>${templates.length} whole pages</span></a></li>
+      <li><a href="agents.html"><b>Fetch as an agent</b> <span>registry.json and llms.txt</span></a></li>
     </ol>
   </div>
   <div class="sprue" role="group" aria-label="All ${N} parts, by group">
+    <div class="sprue-bar">
+      <div class="themes" role="group" aria-label="Theme every part">${themeBtns}</div>
+      <div class="bare" role="group" aria-label="View every part"><button type="button" data-view="built" aria-pressed="true">Built</button><button type="button" data-view="bare" aria-pressed="false">Bare</button></div>
+      <p class="gloss"><b>Bare</b>: no styles; every element and every slot (<code>data-slot</code>, a place you fill in) labelled.</p>
+    </div>
     ${runners}
     <a class="sprue-more" href="parts/index.html">All ${N} parts →</a>
   </div>
@@ -131,7 +138,7 @@ function checkLine(p) {
     const body = `
 <article class="part" data-part="${p.id}">
 <header class="pagehead">
-  <p class="kicker"><a href="index.html">Parts</a> · ${esc(p.group.name)} · No. ${String(p.no).padStart(2, '0')}</p>
+  <p class="kicker"><a href="index.html">Parts</a> · ${p.group.letter} ${esc(p.group.name)}</p>
   <h1><span class="pcode big">${p.code}</span> ${esc(p.title)}</h1>
   <p class="lede">${esc(p.summary)}</p>
   ${checkLine(p)}
@@ -140,10 +147,12 @@ function checkLine(p) {
   <div class="stage-bar" role="toolbar" aria-label="Preview controls">
     <div class="seg" role="group" aria-label="Width">${[375, 768, 1280].map((w, j) => `<button type="button" data-width="${w}" aria-pressed="${j === 2}">${w}</button>`).join('')}</div>
     <div class="seg" role="group" aria-label="Theme">${Object.entries(themes).map(([k, t], j) => `<button type="button" data-theme="${k}" aria-pressed="${j === 0}">${esc(t.label)}</button>`).join('')}</div>
-    <label class="xray"><input type="checkbox" data-xray> X-ray</label>
-    <a class="btn" href="../sandbox.html#p=${p.id}">Open in sandbox</a>
+    <label class="xray"><input type="checkbox" data-xray> X-ray <small>(no styles, elements and slots labelled)</small></label>
+    <button type="button" class="btn" data-copy="#code-${p.id}">Copy code</button>
+    <a class="btn ghost" href="../sandbox.html#p=${p.id}">Open in sandbox</a>
   </div>
   <div class="frame-wrap"><iframe class="frame" title="${esc(p.title)} preview" data-preview></iframe></div>
+  <p class="stage-note">Previewed with <a href="../raw/tokens.css">tokens.css</a> and a three-line reset (box-sizing, body margin, image width), the same head the sandbox writes. The code below is the part alone.</p>
 </div>
 <div class="part-info">
   <section>
@@ -171,17 +180,17 @@ function checkLine(p) {
 // ------------------------------------------------------------------ templates
 {
   const docs = templates.map(t => {
-    const bodies = t.parts.map(ref => partBody(byId[ref.id], ref.replace));
+    const bodies = templateBodies(t, byId);
     const doc = documentFor({ title: t.title, lang: t.lang, tokens: tokensFor(tokensCss, themes, null), bodies });
     fs.writeFileSync(path.join(OUT, 'templates', `${t.id}.html`), doc);
-    return { t, doc };
+    return { t, doc, bodies };
   });
   const cards = docs.map(({ t }) => `<li class="tcard"><div class="twin"><iframe src="${t.id}.html" title="${esc(t.title)} template (miniature)" tabindex="-1" loading="lazy" scrolling="no"></iframe></div>
 <h2>${esc(t.title)}</h2><p>${esc(t.summary)}</p><p class="muted">${t.parts.length} parts · ${esc(t.place)} · language: ${t.lang}</p>
 <p class="parts-used">${t.parts.map(r => `<a href="../parts/${r.id}.html" class="pcode">${byId[r.id].code}</a>`).join(' ')}</p>
 <p class="acts"><a class="btn" href="${t.id}.html">Open the page</a> <a class="btn ghost" href="../sandbox.html#t=${t.id}">Edit in sandbox</a> <a class="btn ghost" href="${t.id}.html" download>Download</a></p></li>`).join('');
   page({ file: 'templates/index.html', depth: 1, current: 'templates/index.html', title: 'Templates · site-repo', desc: `${templates.length} full pages assembled from the parts.`, body: `<section class="pagehead"><h1>Templates</h1><p class="lede">Whole pages assembled from the parts, each with its own words. Open one, download it as a single HTML file, or take it into the sandbox to change it.</p></section><ul class="tgrid">${cards}</ul>` });
-  DATA.templates = templates.map(t => ({ id: t.id, title: t.title, lang: t.lang, parts: t.parts }));
+  DATA.templates = docs.map(({ t, bodies }) => ({ id: t.id, title: t.title, lang: t.lang, parts: t.parts.map((r, i) => ({ id: r.id, body: bodies[i] })) }));
 }
 
 // ------------------------------------------------------------------ sandbox
@@ -226,6 +235,25 @@ page({
     <textarea id="sb-code" spellcheck="false" autocapitalize="off" autocomplete="off"></textarea>
   </div>
 </section>`,
+});
+
+// ------------------------------------------------------------------ start here (a person's first part)
+page({
+  file: 'start.html', current: 'start.html', title: 'Start here · site-repo', desc: 'Paste your first website part into a page, in plain words.',
+  body: `
+<section class="pagehead"><p class="kicker">Start here</p><h1>Your first part, in five minutes</h1><p class="lede">You need a web page you can edit as HTML: a file on your computer, or the HTML view of your site builder. Nothing to install.</p></section>
+<div class="prose">
+<ol class="steps-h">
+<li><h2>Pick a part</h2><p>Open <a href="parts/index.html">Parts</a> and choose one, for example the <a href="parts/contact-form.html">Contact form</a>. Each part page shows it live at phone, tablet and laptop width.</p></li>
+<li><h2>Copy it</h2><p>Press <b>Copy code</b>. You get one block: a <code>&lt;style&gt;</code> part that makes it look right, and the HTML that draws it. Keep them together.</p></li>
+<li><h2>Paste it into your page</h2><p>Paste the block inside your page's <code>&lt;body&gt;</code>, where you want the part to appear. The <code>&lt;body&gt;</code> is the part of the page people see. It already works: every colour and size has a built-in default.</p></li>
+<li><h2>Put in your own words</h2><p>Change the text and links. The places meant for you are marked <code>data-slot</code> in the code, and the part page lists what each one is for. Leave the labels and the words in <code>aria-…</code> and <code>alt</code>: they are what screen readers say.</p></li>
+<li><h2>Give it your colours (optional)</h2><p>Copy the block from <a href="raw/tokens.css">tokens.css</a> into your page's <code>&lt;head&gt;</code>, the hidden top part of the page, inside a <code>&lt;style&gt;</code>. These 15 lines are the <em>tokens</em>: one colour, size or font each. Change one and every part follows. The <a href="sandbox.html">sandbox</a> lets you try colours and copy the result.</p></li>
+</ol>
+<h2>Then</h2>
+<p>Stack several parts into a page in the <a href="sandbox.html">sandbox</a>, or start from a whole <a href="templates/index.html">template</a>: a garden studio in Fremantle, an event in Lagos, an illustrator's portfolio in Spanish, a product launch.</p>
+<p class="muted">Some parts need one more thing, said on their page under <b>Needs</b>. The forms need an address to send to (a form service or your own server); the map needs to reach openstreetmap.org.</p>
+</div>`,
 });
 
 // ------------------------------------------------------------------ agents page, registry, llms.txt

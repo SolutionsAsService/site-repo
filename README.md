@@ -33,4 +33,4 @@ Agents: start at `registry.json` or `llms.txt` (see [AGENTS.md](AGENTS.md)).
 npm run all      # build, check (needs Playwright), build again to publish the results
 ```
 
-Node 18+ with no dependencies. The check uses Playwright's Chromium. The built `site/` is committed and deployed as static files (`vercel.json`, `fluid.json`).
+The build needs Node 18+ and nothing else. The check needs Playwright (`npm install` installs the pinned devDependency; `npx playwright install chromium` if you have no browser). The built `site/` is committed and deployed as static files (`vercel.json`, `fluid.json`).

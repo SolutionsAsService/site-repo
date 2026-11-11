@@ -9,7 +9,10 @@ import { ROOT, loadAll } from './lib.mjs';
 
 const require = createRequire(import.meta.url);
 let chromium;
-try { ({ chromium } = require('playwright')); } catch { ({ chromium } = require('/opt/node22/lib/node_modules/playwright')); }
+try { ({ chromium } = require('playwright')); } catch {
+  console.error('The check needs Playwright: run `npm install` (it is a devDependency), then `npx playwright install chromium` if no browser is present.');
+  process.exit(3);
+}
 
 const SITE = path.join(ROOT, 'site');
 const FIX = path.join(ROOT, 'build', 'fixtures');
@@ -28,7 +31,7 @@ const B = `http://127.0.0.1:${server.address().port}/`;
 const { themes, parts, templates } = loadAll();
 const WIDTHS = [375, 768, 1280];
 const THEMES = Object.keys(themes);
-const PROBES = ['no sideways scroll', 'every field labelled', 'targets 24 px or spaced 24 px (inline text links exempt)', 'visible focus outline (2 px or more) after a real Tab', 'text contrast 4.5:1 (3:1 for large text) against the nearest opaque background'];
+const PROBES = ['no sideways scroll', 'every form field has a label', 'no target smaller than 24 px with another target within 24 px (links inside running text exempt)', 'after a real Tab press, every focused element shows an outline of 2 px or more at 3:1 contrast against the surface behind it', 'text contrast of 4.5:1, or 3:1 for large text, against the nearest opaque background'];
 const results = [];
 const rec = (probe, pass, detail) => { results.push({ probe, pass, detail }); console.log(`${pass ? 'PASS' : 'FAIL'}  ${probe}  ${typeof detail === 'string' ? detail : JSON.stringify(detail)}`); };
 
@@ -82,20 +85,30 @@ function pageProbes() {
   return out;
 }
 
+const RING = `(() => {
+  const parse = c => { const m = c.match(/rgba?\\(([^)]+)\\)/); if (!m) return null; const v = m[1].split(/[ ,/]+/).filter(Boolean).map(Number); return { r: v[0], g: v[1], b: v[2], a: v.length > 3 ? v[3] : 1 }; };
+  const lum = ({ r, g, b }) => { const f = x => { x /= 255; return x <= .03928 ? x / 12.92 : ((x + .055) / 1.055) ** 2.4; }; return .2126 * f(r) + .7152 * f(g) + .0722 * f(b); };
+  const mix = (fg, bg) => ({ r: fg.r * fg.a + bg.r * (1 - fg.a), g: fg.g * fg.a + bg.g * (1 - fg.a), b: fg.b * fg.a + bg.b * (1 - fg.a), a: 1 });
+  const bgOf = el => { const st = []; for (let e = el; e; e = e.parentElement) { const c = parse(getComputedStyle(e).backgroundColor); if (c && c.a > 0) { st.push(c); if (c.a >= 1) break; } } let bg = { r: 255, g: 255, b: 255, a: 1 }; for (const c of st.reverse()) bg = mix(c, bg); return bg; };
+  window.__ring = e => { const cs = getComputedStyle(e); const oc = parse(cs.outlineColor); if (!oc) return 0; const bg = bgOf(e.parentElement || e); const [a, b] = [lum(mix(oc, bg)), lum(bg)].sort((x, y) => y - x); return (a + .05) / (b + .05); };
+})()`;
 async function focusProbe(p) {
   const out = [];
   const n = await p.evaluate(() => document.querySelectorAll('a[href], button, input, textarea, select, summary').length);
+  await p.evaluate(RING);
   await p.evaluate(() => { document.activeElement && document.activeElement.blur(); window.scrollTo(0, 0); });
   for (let i = 0; i < Math.min(n, 30); i++) {
     await p.keyboard.press('Tab');
     const r = await p.evaluate(() => {
       const e = document.activeElement; if (!e || e === document.body) return null;
-      // a focused iframe cannot show its own ring in Chromium; its wrapper's :focus-within ring is what the eye sees
-      const cs = getComputedStyle(e.tagName === 'IFRAME' ? e.parentElement : e);
-      return { tag: e.tagName.toLowerCase(), text: (e.textContent || e.name || '').trim().slice(0, 16), style: cs.outlineStyle, width: parseFloat(cs.outlineWidth), fv: e.matches(':focus-visible') };
+      // Chromium draws no ring on a focused iframe and neither :focus nor :focus-within matches (measured), so a part
+      // must keep iframes out of the tab order; one that does not is reported here as having no visible focus.
+      const cs = getComputedStyle(e);
+      return { tag: e.tagName.toLowerCase(), text: (e.textContent || e.name || '').trim().slice(0, 16), style: cs.outlineStyle, width: parseFloat(cs.outlineWidth), fv: e.matches(':focus-visible'), ring: window.__ring(e) };
     });
     if (!r) break;
-    if ((!r.fv && r.tag !== 'iframe') || r.style === 'none' || r.width < 2) out.push(`no visible focus on ${r.tag} "${r.text}" (${r.style} ${r.width}px)`);
+    if (!r.fv || r.style === 'none' || r.width < 2) out.push(`no visible focus on ${r.tag} "${r.text}" (${r.style} ${r.width}px)`);
+    else if (r.ring < 3) out.push(`focus ring ${r.ring.toFixed(2)}:1 < 3 on ${r.tag} "${r.text}"`);
   }
   return out;
 }
@@ -132,7 +145,7 @@ for (const part of parts) {
     const { p, ctx, errors } = await open(B + `preview/${part.id}.html`, w);
     await applyTheme(p, themes[t]);
     const f = await p.evaluate(pageProbes);
-    if (t === THEMES[0]) f.push(...await focusProbe(p));
+    f.push(...await focusProbe(p));
     f.push(...errors.map(e => `script error ${e}`));
     f.forEach(x => failures.push(`${w}px ${t}: ${x}`));
     await ctx.close();
@@ -148,11 +161,13 @@ rec(`parts pass every probe at ${WIDTHS.join('/')} in ${THEMES.length} themes`, 
   for (const t of templates) for (const w of [375, 1280]) {
     const { p, ctx } = await open(B + `templates/${t.id}.html`, w);
     (await p.evaluate(pageProbes)).forEach(f => bad.push(`${t.id} ${w}: ${f}`));
+    const dead = await p.evaluate(() => [...document.querySelectorAll('a[href^="#"]')].map(a => a.getAttribute('href')).filter(h => h.length > 1 && !document.getElementById(h.slice(1))));
+    dead.forEach(h => bad.push(`${t.id} ${w}: link ${h} has no target on the page`));
     const lang = await p.evaluate(() => document.documentElement.lang);
     if (lang !== t.lang) bad.push(`${t.id}: lang ${lang} ≠ ${t.lang}`);
     await ctx.close();
   }
-  rec('templates pass the probes at 375 and 1280, with the right lang', bad.length === 0, bad.length ? bad.slice(0, 6) : `${templates.length} templates`);
+  rec('templates pass the probes at 375 and 1280, every in-page link has a target, and lang is right', bad.length === 0, bad.length ? bad.slice(0, 6) : `${templates.length} templates`);
 }
 
 // ------------------------------------------------------------------ the site itself
@@ -192,7 +207,7 @@ for (const [w, h] of [[1280, 800], [375, 812]]) {
     const groups = new Set(pieces.map(e => e.closest('.runner').dataset.group));
     return { bottom: Math.round(Math.max(...parts.map(b => b.bottom))), right: Math.round(Math.max(...parts.map(b => b.right))), piecesShown: pieces.length, groupsShown: groups.size, assemblyLinks: document.querySelectorAll('.assembly a').length };
   });
-  rec(`first screen at ${w}x${h}: sprue, themes and the four doors complete above the fold; every group shown`, r.bottom <= h && r.right <= w && r.groupsShown === 7 && r.assemblyLinks === 4, r);
+  rec(`first screen at ${w}x${h}: sprue, theme and view switches, and the five doors complete above the fold; every group shown`, r.bottom <= h && r.right <= w && r.groupsShown === 7 && r.assemblyLinks === 5, r);
   await ctx.close();
 }
 {
@@ -203,6 +218,17 @@ for (const [w, h] of [[1280, 800], [375, 812]]) {
   await p.waitForTimeout(300);
   const after = await p.evaluate(() => [...document.querySelectorAll('.piece-win iframe')].map(f => f.contentDocument.documentElement.style.getPropertyValue('--sr-paper')));
   rec('landing theme switch re-themes every miniature', after.length === parts.length && after.every(v => v === themes.night['--sr-paper']), { before, themed: after.filter(v => v === themes.night['--sr-paper']).length, of: after.length });
+  await ctx.close();
+}
+{
+  const { p, ctx } = await open(B + 'index.html', 1280, 800);
+  await p.waitForTimeout(600);
+  const count = () => p.evaluate(() => [...document.querySelectorAll('.piece-win iframe')].map(f => f.contentDocument && f.contentDocument.querySelectorAll('[data-xr]').length > 0));
+  await p.click('button[data-view="bare"]'); await p.waitForTimeout(300);
+  const on = await count();
+  await p.click('button[data-view="built"]'); await p.waitForTimeout(300);
+  const off = await count();
+  rec('landing Bare view X-rays every miniature, and Built restores them', on.filter(Boolean).length === parts.length && off.filter(Boolean).length === 0, { bare: on.filter(Boolean).length, builtAgain: off.filter(Boolean).length, of: parts.length });
   await ctx.close();
 }
 {
@@ -221,8 +247,8 @@ for (const [w, h] of [[1280, 800], [375, 812]]) {
 }
 {
   const reg = JSON.parse(fs.readFileSync(path.join(SITE, 'registry.json'), 'utf8'));
-  const bad = reg.parts.filter(p => crypto.createHash('sha256').update(fs.readFileSync(path.join(SITE, p.raw))).digest('hex') !== p.sha256).map(p => p.id);
-  rec('registry: every raw file matches its sha256', bad.length === 0 && reg.parts.length === parts.length, bad.length ? bad : `${reg.parts.length} parts`);
+  const bad = reg.parts.filter(p => crypto.createHash('sha256').update(fs.readFileSync(path.join(ROOT, 'parts', `${p.id}.html`))).digest('hex') !== p.sha256 || !fs.readFileSync(path.join(SITE, p.raw)).equals(fs.readFileSync(path.join(ROOT, 'parts', `${p.id}.html`)))).map(p => p.id);
+  rec('registry: every sha256 matches the source in parts/, and every raw file equals its source', bad.length === 0 && reg.parts.length === parts.length, bad.length ? bad : `${reg.parts.length} parts`);
 }
 
 await browser.close();

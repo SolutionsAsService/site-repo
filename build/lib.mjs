@@ -29,7 +29,7 @@ export function readPart(file) {
   if (!GROUPS.some(g => g.id === meta.category)) throw new Error(`${file}: unknown category "${meta.category}"`);
   const body = src.slice(m[0].length).trim();
   for (const slot of Object.keys(meta.slots)) {
-    const inBody = new RegExp(`data-slot="[^"]*\\b${slot}\\b`).test(body) || /^(current|featured|brand-href)$/.test(slot);
+    const inBody = new RegExp(`data-slot="[^"]*\\b${slot}\\b`).test(body);
     if (!inBody) throw new Error(`${file}: slot "${slot}" is declared but no element has data-slot="${slot}"`);
   }
   return { ...meta, file: path.relative(ROOT, file), source: src, body, sha256: crypto.createHash('sha256').update(src).digest('hex'), bytes: Buffer.byteLength(src) };
@@ -101,6 +101,19 @@ export function partBody(p, replace = {}) {
   let b = p.body;
   for (const [from, to] of Object.entries(replace)) b = b.split(from).join(to);
   return `<!-- part ${p.code} ${p.id} -->\n${b}`;
+}
+
+// A template's final part bodies: text overrides, then an id on each listed part's root element, then its links
+// rewritten to anchors on the same page. The build fails if a template link would leave the page.
+export function templateBodies(t, byId) {
+  return t.parts.map(ref => {
+    let b = partBody(byId[ref.id], ref.replace);
+    const id = (t.ids || {})[ref.id];
+    if (id) b = b.replace(/(-->\n(?:<style>[\s\S]*?<\/style>\n)?<[a-z]+)/, `$1 id="${id}"`);
+    for (const [from, to] of Object.entries(t.links || {})) b = b.split(`href="${from}"`).join(`href="${to}"`);
+    for (const m of b.matchAll(/href="(\/[^"]*)"/g)) throw new Error(`template ${t.id}: part ${ref.id} still links to ${m[1]}`);
+    return b;
+  });
 }
 
 export const esc = s => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');

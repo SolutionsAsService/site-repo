@@ -49,6 +49,16 @@ body svg,body img{display:inline-block!important;width:40px!important;height:30p
 [data-slot][data-xr]::before{background:#e0531a;color:#141518}
 details>*{display:block!important}`;
   const XRAY_JS = `document.querySelectorAll('body *').forEach(function(e){var t=e.tagName.toLowerCase();if(['br','path','circle','rect','use','b','em','small','span','i','strong'].indexOf(t)>-1&&!e.dataset.slot)return;e.setAttribute('data-xr',t+(e.dataset.slot?' ['+e.dataset.slot+']':''))});document.querySelectorAll('details').forEach(function(d){d.open=true});`;
+  // X-ray a live document in place (used by the sprue's Bare view); returns false if it is not loaded yet
+  SR.xrayLive = (doc, on) => {
+    if (!doc || !doc.body) return false;
+    const styles = [...doc.querySelectorAll('body style')];
+    styles.forEach(s => { s.media = on ? 'not all' : ''; });
+    let x = doc.getElementById('sr-xray');
+    if (on && !x) { x = doc.createElement('style'); x.id = 'sr-xray'; x.textContent = XRAY_CSS; doc.head.appendChild(x); new doc.defaultView.Function(XRAY_JS)(); }
+    if (!on && x) { x.remove(); doc.querySelectorAll('[data-xr]').forEach(e => e.removeAttribute('data-xr')); }
+    return true;
+  };
   SR.preview = (doc, xray) => {
     if (!xray) return doc;
     const [head, rest] = doc.split('</head>');
@@ -86,7 +96,7 @@ details>*{display:block!important}`;
   // ---------- miniatures: scale 1200 px pages into their windows
   const scaleMinis = () => $$('.piece-win iframe, .twin iframe').forEach(f => {
     const w = f.parentElement.clientWidth;
-    if (w) f.style.setProperty('--s', (w / 1200).toFixed(4));
+    if (w) f.style.setProperty('--s', (w / (+f.dataset.vw || 1200)).toFixed(4));
   });
   scaleMinis();
   addEventListener('resize', scaleMinis);
@@ -108,6 +118,20 @@ details>*{display:block!important}`;
         } catch (err) { /* not loaded yet */ }
       });
       void tokenSets;
+    });
+  }
+
+  // ---------- landing: Built / Bare for every miniature
+  const bare = document.querySelector('.bare');
+  if (bare) {
+    let on = false;
+    const apply = f => SR.xrayLive(f.contentDocument, on);
+    $$('.piece-win iframe').forEach(f => f.addEventListener('load', () => { if (on) apply(f); }));
+    bare.addEventListener('click', e => {
+      const b = e.target.closest('button[data-view]'); if (!b) return;
+      SR.press(bare, b); on = b.dataset.view === 'bare';
+      document.documentElement.classList.toggle('is-bare', on);
+      $$('.piece-win iframe').forEach(apply);
     });
   }
 

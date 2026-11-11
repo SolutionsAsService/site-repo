@@ -52,25 +52,25 @@ img{max-width:100%}
   .sr-nav details ul{position:absolute;right:0;top:calc(100% + 6px);flex-direction:column;gap:0;min-width:200px;background:var(--sr-paper,#fbfaf7);border:1px solid var(--sr-line,#d6d2c8);border-radius:var(--sr-radius,10px);padding:6px 14px;z-index:5}
 }
 </style>
-<header class="sr-nav">
+<header id="top" class="sr-nav">
   <div class="sr-nav__in">
-    <a class="sr-nav__brand" href="/" data-slot="brand-href"><span data-slot="brand">Quillpad</span></a>
+    <a class="sr-nav__brand" href="#top" data-slot="brand-href"><span data-slot="brand">Quillpad</span></a>
     <nav class="sr-nav__wide" aria-label="Main">
       <ul>
-        <li><a href="/" aria-current="page" data-slot="link">Home</a></li>
-        <li><a href="/services" data-slot="link">Features</a></li>
-        <li><a href="/about" data-slot="link">Pricing</a></li>
-        <li><a href="/contact" data-slot="link">Contact</a></li>
+        <li><a href="#top" aria-current="page" data-slot="link current">Home</a></li>
+        <li><a href="#features" data-slot="link">Features</a></li>
+        <li><a href="#download" data-slot="link">Pricing</a></li>
+        <li><a href="#updates" data-slot="link">Contact</a></li>
       </ul>
     </nav>
     <details>
       <summary>Menu</summary>
       <nav aria-label="Main (menu)">
         <ul>
-          <li><a href="/" aria-current="page">Home</a></li>
-          <li><a href="/services">Features</a></li>
-          <li><a href="/about">Pricing</a></li>
-          <li><a href="/contact">Contact</a></li>
+          <li><a href="#top" aria-current="page" data-slot="link current">Home</a></li>
+          <li><a href="#features" data-slot="link">Features</a></li>
+          <li><a href="#download" data-slot="link">Pricing</a></li>
+          <li><a href="#updates" data-slot="link">Contact</a></li>
         </ul>
       </nav>
     </details>
@@ -98,8 +98,8 @@ img{max-width:100%}
       <h1 data-slot="headline">Notes that stay on your device</h1>
       <p class="sr-hero__lede" data-slot="lede">Quillpad keeps every note as a plain text file in a folder you choose. No account, no sync server, no lock-in.</p>
       <div class="sr-hero__acts">
-        <a href="/contact" data-slot="primary">Download for free</a>
-        <a href="/work" data-slot="secondary">Read the docs</a>
+        <a href="#updates" data-slot="primary">Download for free</a>
+        <a href="#features" data-slot="secondary">Read the docs</a>
       </div>
     </div>
     <img class="sr-hero__img" data-slot="image" alt="The Quillpad editor showing a list of notes beside an open note" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 300'%3E%3Crect width='400' height='300' fill='%23d9e2cf'/%3E%3Cpath d='M0 230 Q100 180 200 215 T400 200 V300 H0Z' fill='%2393a97f'/%3E%3Cpath d='M0 260 Q120 225 230 250 T400 245 V300 H0Z' fill='%236f8a5c'/%3E%3Ccircle cx='310' cy='80' r='34' fill='%23f2d79b'/%3E%3C/svg%3E">
@@ -116,7 +116,7 @@ img{max-width:100%}
 .sr-feat h3{font-size:1.1rem;margin:0 0 6px}
 .sr-feat p{margin:0;color:var(--sr-muted,#575c66)}
 </style>
-<section class="sr-feat">
+<section id="features" class="sr-feat">
   <div class="sr-feat__in">
     <h2 data-slot="heading">Why plain files</h2>
     <p class="sr-feat__intro" data-slot="intro">Your notes outlive the app.</p>
@@ -135,10 +135,10 @@ img{max-width:100%}
 .sr-cta a{display:inline-flex;align-items:center;min-height:44px;padding:0 22px;border-radius:var(--sr-radius,10px);background:var(--sr-accent-ink,#fff);color:var(--sr-accent,#1f4fd8);font-weight:700;text-decoration:none}
 .sr-cta a:focus-visible{outline:3px solid var(--sr-accent-ink,#fff);outline-offset:3px}
 </style>
-<section class="sr-cta">
+<section id="download" class="sr-cta">
   <div class="sr-cta__in">
     <p data-slot="line">Version 1.0 runs on macOS, Windows and Linux.</p>
-    <a href="/contact" data-slot="action">Download Quillpad</a>
+    <a href="#updates" data-slot="action">Download Quillpad</a>
   </div>
 </section>
 <!-- part D2 newsletter -->
@@ -154,7 +154,7 @@ img{max-width:100%}
 .sr-news input:focus-visible,.sr-news button:focus-visible{outline:3px solid var(--sr-accent,#1f4fd8);outline-offset:2px}
 @media (max-width:720px){.sr-news__in{grid-template-columns:minmax(0,1fr)}}
 </style>
-<section class="sr-news">
+<section id="updates" class="sr-news">
   <div class="sr-news__in">
     <div><h2>Release notes</h2><p data-slot="pitch">One email per release, about six a year.</p></div>
     <form action="https://example.com/your-signup-endpoint" method="post" data-slot="endpoint">
@@ -181,9 +181,9 @@ img{max-width:100%}
   <div class="sr-foot__in">
     <div><b data-slot="brand">Quillpad</b><p data-slot="line">Notes as plain files.</p></div>
     <nav aria-label="Footer"><ul>
-      <li><a href="/services" data-slot="link">Services</a></li>
-      <li><a href="/about" data-slot="link">About</a></li>
-      <li><a href="/contact" data-slot="link">Contact</a></li>
+      <li><a href="#features" data-slot="link">Services</a></li>
+      <li><a href="#download" data-slot="link">About</a></li>
+      <li><a href="#updates" data-slot="link">Contact</a></li>
     </ul></nav>
     <ul aria-label="Social">
       <li><a href="https://example.com/your-x-profile" data-slot="social"><svg width="20" height="20" viewBox="0 0 20 20" aria-hidden="true"><path d="M4 3 L16 17 M16 3 L4 17" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>X</a></li>

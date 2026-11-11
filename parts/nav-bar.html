@@ -1,5 +1,5 @@
 <!--sr:part
-{"id":"nav-bar","title":"Navigation bar","category":"navigation","summary":"Brand name plus links. Below 640 px the links fold into a menu that opens without JavaScript (details/summary).","slots":{"brand":"Site or business name","brand-href":"Home URL","link":"Each navigation link (text and href); add or remove li items","current":"aria-current=\"page\" on the link for the current page"},"needs":[],"a11y":["Brand link has a text name","Current page marked with aria-current","Menu is a native details/summary: keyboard and screen-reader operable"]}
+{"id":"nav-bar","title":"Navigation bar","category":"navigation","summary":"Brand name plus links. Below 640 px the links fold into a menu that opens without JavaScript (details/summary).","slots":{"brand":"Site or business name","brand-href":"Home URL","link":"Each navigation link (text and href); add or remove li items. The links appear twice: once in the wide nav and once in the phone menu; keep both lists the same","current":"aria-current=\"page\" on the link for the current page"},"needs":[],"a11y":["Brand link has a text name","Current page marked with aria-current","Menu is a native details/summary: keyboard and screen-reader operable"]}
 -->
 <style>
 .sr-nav{background:var(--sr-paper,#fbfaf7);color:var(--sr-ink,#17181c);border-bottom:1px solid var(--sr-line,#d6d2c8);font-family:var(--sr-font-body,system-ui,sans-serif)}
@@ -25,7 +25,7 @@
     <a class="sr-nav__brand" href="/" data-slot="brand-href"><span data-slot="brand">Harbor &amp; Pine</span></a>
     <nav class="sr-nav__wide" aria-label="Main">
       <ul>
-        <li><a href="/" aria-current="page" data-slot="link">Home</a></li>
+        <li><a href="/" aria-current="page" data-slot="link current">Home</a></li>
         <li><a href="/services" data-slot="link">Services</a></li>
         <li><a href="/about" data-slot="link">About</a></li>
         <li><a href="/contact" data-slot="link">Contact</a></li>
@@ -35,10 +35,10 @@
       <summary>Menu</summary>
       <nav aria-label="Main (menu)">
         <ul>
-          <li><a href="/" aria-current="page">Home</a></li>
-          <li><a href="/services">Services</a></li>
-          <li><a href="/about">About</a></li>
-          <li><a href="/contact">Contact</a></li>
+          <li><a href="/" aria-current="page" data-slot="link current">Home</a></li>
+          <li><a href="/services" data-slot="link">Services</a></li>
+          <li><a href="/about" data-slot="link">About</a></li>
+          <li><a href="/contact" data-slot="link">Contact</a></li>
         </ul>
       </nav>
     </details>

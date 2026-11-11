@@ -56,5 +56,18 @@
     "Low-water gardens, designed, planted and looked after.": "Notes as plain files."
    }
   }
- ]
+ ],
+ "ids": {
+  "nav-bar": "top",
+  "feature-grid": "features",
+  "cta-band": "download",
+  "newsletter": "updates"
+ },
+ "links": {
+  "/": "#top",
+  "/services": "#features",
+  "/about": "#download",
+  "/contact": "#updates",
+  "/work": "#features"
+ }
 }

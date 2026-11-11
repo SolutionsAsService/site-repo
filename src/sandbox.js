@@ -13,7 +13,7 @@
     if (h.get('t')) { loadTemplate(h.get('t')); }
     else {
       const ids = (h.get('p') || 'nav-bar,hero-split,cta-band').split(',').filter(id => byId[id]);
-      st.stack = ids.map(id => ({ id, replace: null }));
+      st.stack = ids.map(id => ({ id, body: null }));
     }
     if (h.get('th') && D.themes[h.get('th')]) st.preset = h.get('th');
     if (h.get('k')) for (const kv of h.get('k').split(';')) { const [k, v] = kv.split(':'); if (/^--sr-[a-z-]+$/.test(k) && v) st.overrides[k] = /^[0-9a-f]{6}$/i.test(v) ? '#' + v : decodeURIComponent(v); }
@@ -28,13 +28,13 @@
   }
   function loadTemplate(id) {
     const t = D.templates.find(t => t.id === id); if (!t) return;
-    st.stack = t.parts.map(r => ({ id: r.id, replace: r.replace || null }));
+    st.stack = t.parts.map(r => ({ id: r.id, body: r.body }));
     st.title = t.title; st.lang = t.lang;
   }
 
   // ---------- assemble
   const tokens = () => SR.tokensFor(st.preset, st.overrides);
-  const assemble = () => SR.doc({ title: st.title, lang: st.lang, tokens: tokens(), bodies: st.stack.map(s => SR.partBody(byId[s.id], s.replace)) });
+  const assemble = () => SR.doc({ title: st.title, lang: st.lang, tokens: tokens(), bodies: st.stack.map(s => s.body || SR.partBody(byId[s.id])) });
   function render() {
     frame.srcdoc = SR.preview(code.value, st.xray);
     SR.fit(frame, st.width, { fitHeight: false });
@@ -74,7 +74,7 @@
       stackEl.appendChild(li);
     });
   }
-  $('#sb-addbtn').addEventListener('click', () => { const id = $('#sb-add').value; st.stack.push({ id, replace: null }); if (!rebuild()) st.stack.pop(); });
+  $('#sb-addbtn').addEventListener('click', () => { const id = $('#sb-add').value; st.stack.push({ id, body: null }); if (!rebuild()) st.stack.pop(); });
   $('#sb-tplbtn').addEventListener('click', () => { const id = $('#sb-tpl').value; if (!id) return; const snap = [st.stack, st.title, st.lang]; loadTemplate(id); if (!rebuild()) [st.stack, st.title, st.lang] = snap; });
 
   // ---------- token controls

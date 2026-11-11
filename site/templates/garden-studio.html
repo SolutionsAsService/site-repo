@@ -52,25 +52,25 @@ img{max-width:100%}
   .sr-nav details ul{position:absolute;right:0;top:calc(100% + 6px);flex-direction:column;gap:0;min-width:200px;background:var(--sr-paper,#fbfaf7);border:1px solid var(--sr-line,#d6d2c8);border-radius:var(--sr-radius,10px);padding:6px 14px;z-index:5}
 }
 </style>
-<header class="sr-nav">
+<header id="top" class="sr-nav">
   <div class="sr-nav__in">
-    <a class="sr-nav__brand" href="/" data-slot="brand-href"><span data-slot="brand">Harbor &amp; Pine</span></a>
+    <a class="sr-nav__brand" href="#top" data-slot="brand-href"><span data-slot="brand">Harbor &amp; Pine</span></a>
     <nav class="sr-nav__wide" aria-label="Main">
       <ul>
-        <li><a href="/" aria-current="page" data-slot="link">Home</a></li>
-        <li><a href="/services" data-slot="link">Services</a></li>
-        <li><a href="/about" data-slot="link">About</a></li>
-        <li><a href="/contact" data-slot="link">Contact</a></li>
+        <li><a href="#top" aria-current="page" data-slot="link current">Home</a></li>
+        <li><a href="#services" data-slot="link">Services</a></li>
+        <li><a href="#about" data-slot="link">About</a></li>
+        <li><a href="#contact" data-slot="link">Contact</a></li>
       </ul>
     </nav>
     <details>
       <summary>Menu</summary>
       <nav aria-label="Main (menu)">
         <ul>
-          <li><a href="/" aria-current="page">Home</a></li>
-          <li><a href="/services">Services</a></li>
-          <li><a href="/about">About</a></li>
-          <li><a href="/contact">Contact</a></li>
+          <li><a href="#top" aria-current="page" data-slot="link current">Home</a></li>
+          <li><a href="#services" data-slot="link">Services</a></li>
+          <li><a href="#about" data-slot="link">About</a></li>
+          <li><a href="#contact" data-slot="link">Contact</a></li>
         </ul>
       </nav>
     </details>
@@ -98,8 +98,8 @@ img{max-width:100%}
       <h1 data-slot="headline">Gardens that look better every year</h1>
       <p class="sr-hero__lede" data-slot="lede">We design and plant low-water gardens for homes and small businesses, then look after them through the first two seasons.</p>
       <div class="sr-hero__acts">
-        <a href="/contact" data-slot="primary">Book a site visit</a>
-        <a href="/work" data-slot="secondary">See our work</a>
+        <a href="#contact" data-slot="primary">Book a site visit</a>
+        <a href="#services" data-slot="secondary">See our work</a>
       </div>
     </div>
     <img class="sr-hero__img" data-slot="image" alt="A gravel garden with lavender and grasses in evening light" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 300'%3E%3Crect width='400' height='300' fill='%23d9e2cf'/%3E%3Cpath d='M0 230 Q100 180 200 215 T400 200 V300 H0Z' fill='%2393a97f'/%3E%3Cpath d='M0 260 Q120 225 230 250 T400 245 V300 H0Z' fill='%236f8a5c'/%3E%3Ccircle cx='310' cy='80' r='34' fill='%23f2d79b'/%3E%3C/svg%3E">
@@ -116,7 +116,7 @@ img{max-width:100%}
 .sr-feat h3{font-size:1.1rem;margin:0 0 6px}
 .sr-feat p{margin:0;color:var(--sr-muted,#575c66)}
 </style>
-<section class="sr-feat">
+<section id="services" class="sr-feat">
   <div class="sr-feat__in">
     <h2 data-slot="heading">What you get</h2>
     <p class="sr-feat__intro" data-slot="intro">Every garden starts with a plan you can read and a price that does not move.</p>
@@ -176,7 +176,7 @@ img{max-width:100%}
 .sr-quote figcaption{margin-top:18px;color:var(--sr-muted,#575c66)}
 .sr-quote figcaption b{color:var(--sr-ink,#17181c)}
 </style>
-<section class="sr-quote">
+<section id="about" class="sr-quote">
   <figure>
     <blockquote><p data-slot="quote">The garden we were sold was the garden we got, and it is better in the third summer than the first.</p></blockquote>
     <figcaption><b data-slot="name">Adaeze Okafor</b>, <span data-slot="role">homeowner, Ridge Road</span></figcaption>
@@ -200,13 +200,13 @@ img{max-width:100%}
 .sr-price__plan--main a{background:var(--sr-accent,#1f4fd8);color:var(--sr-accent-ink,#fff)}
 .sr-price a:focus-visible{outline:3px solid var(--sr-ink,#17181c);outline-offset:3px}
 </style>
-<section class="sr-price">
+<section id="plans" class="sr-price">
   <div class="sr-price__in">
     <h2>Plans</h2>
     <div class="sr-price__grid">
-      <article class="sr-price__plan" data-slot="plan"><h3>Plan only</h3><p class="sr-price__amt">$650</p><p class="sr-price__per">one time</p><ul><li>Site visit</li><li>Drawn planting plan</li><li>Plant list with sources</li></ul><a href="/contact?plan=plan">Choose plan only</a></article>
-      <article class="sr-price__plan sr-price__plan--main" data-slot="plan"><span class="sr-price__tag">Most chosen</span><h3>Plan and plant</h3><p class="sr-price__amt">$4,800</p><p class="sr-price__per">typical small garden</p><ul><li>Everything in Plan only</li><li>Plants, soil and planting</li><li>Two seasons of care</li></ul><a href="/contact?plan=plant">Choose plan and plant</a></article>
-      <article class="sr-price__plan" data-slot="plan"><h3>Care only</h3><p class="sr-price__amt">$90</p><p class="sr-price__per">per monthly visit</p><ul><li>Watering checks</li><li>Pruning and weeding</li><li>Replacement plants at cost</li></ul><a href="/contact?plan=care">Choose care only</a></article>
+      <article class="sr-price__plan" data-slot="plan"><h3>Plan only</h3><p class="sr-price__amt">$650</p><p class="sr-price__per">one time</p><ul><li>Site visit</li><li>Drawn planting plan</li><li>Plant list with sources</li></ul><a href="#contact">Choose plan only</a></article>
+      <article class="sr-price__plan sr-price__plan--main" data-slot="plan featured"><span class="sr-price__tag">Most chosen</span><h3>Plan and plant</h3><p class="sr-price__amt">$4,800</p><p class="sr-price__per">typical small garden</p><ul><li>Everything in Plan only</li><li>Plants, soil and planting</li><li>Two seasons of care</li></ul><a href="#contact">Choose plan and plant</a></article>
+      <article class="sr-price__plan" data-slot="plan"><h3>Care only</h3><p class="sr-price__amt">$90</p><p class="sr-price__per">per monthly visit</p><ul><li>Watering checks</li><li>Pruning and weeding</li><li>Replacement plants at cost</li></ul><a href="#contact">Choose care only</a></article>
     </div>
   </div>
 </section>
@@ -243,7 +243,7 @@ img{max-width:100%}
 <section class="sr-cta">
   <div class="sr-cta__in">
     <p data-slot="line">Autumn planting slots open in August.</p>
-    <a href="/contact" data-slot="action">Ask for a visit</a>
+    <a href="#contact" data-slot="action">Ask for a visit</a>
   </div>
 </section>
 <!-- part D1 contact-form -->
@@ -264,7 +264,7 @@ img{max-width:100%}
 .sr-form button:focus-visible{outline:3px solid var(--sr-ink,#17181c);outline-offset:3px}
 @media (max-width:560px){.sr-form form{grid-template-columns:minmax(0,1fr)}}
 </style>
-<section class="sr-form">
+<section id="contact" class="sr-form">
   <div class="sr-form__in">
     <h2>Write to us</h2>
     <p class="sr-form__intro" data-slot="intro">We answer within two working days.</p>
@@ -288,7 +288,7 @@ img{max-width:100%}
 .sr-map a:focus-visible{outline:3px solid var(--sr-accent,#1f4fd8);outline-offset:2px}
 @media (max-width:720px){.sr-map__in{grid-template-columns:minmax(0,1fr)}}
 </style>
-<section class="sr-map">
+<section id="find-us" class="sr-map">
   <div class="sr-map__in">
     <iframe title="Map: Harbor &amp; Pine studio, Fremantle" loading="lazy" tabindex="-1" data-slot="bbox marker" src="https://www.openstreetmap.org/export/embed.html?bbox=115.7385%2C-32.0600%2C115.7565%2C-32.0490&amp;layer=mapnik&amp;marker=-32.0545%2C115.7475"></iframe>
     <div>
@@ -316,9 +316,9 @@ img{max-width:100%}
   <div class="sr-foot__in">
     <div><b data-slot="brand">Harbor &amp; Pine</b><p data-slot="line">Low-water gardens, designed, planted and looked after.</p></div>
     <nav aria-label="Footer"><ul>
-      <li><a href="/services" data-slot="link">Services</a></li>
-      <li><a href="/about" data-slot="link">About</a></li>
-      <li><a href="/contact" data-slot="link">Contact</a></li>
+      <li><a href="#services" data-slot="link">Services</a></li>
+      <li><a href="#about" data-slot="link">About</a></li>
+      <li><a href="#contact" data-slot="link">Contact</a></li>
     </ul></nav>
     <ul aria-label="Social">
       <li><a href="https://example.com/your-x-profile" data-slot="social"><svg width="20" height="20" viewBox="0 0 20 20" aria-hidden="true"><path d="M4 3 L16 17 M16 3 L4 17" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>X</a></li>
