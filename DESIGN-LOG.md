@@ -376,3 +376,60 @@ Consequence: The check takes longer (focus in 4 themes).
 Fence: n/a.
 Frontier effect: a re-run of the check, then R2.
 Mode field: n/a.
+
+---
+
+## Panel, WHOLE, round R2 (commit 163232b; panel/R2/*.png; evidence panel/R2/evidence.md)
+
+7 of 8 seats filed. Critic: Inclusion (Mace) was launched but no file appeared before the owner graded and closed the run: **NOT REPORTED (run closed by the owner's grade)**. It is not counted as a pass. Critic: Erasure (Kelly Walters) was **not convened** in R2 (the run closed first).
+
+| Critic | Anchor used | Observed in the work | Verdict | Requested change |
+|---|---|---|---|---|
+| Critic: Evidence (Cairo) | How Charts Lie | Re-ran 12/12 and 18/18. R1 F1–F6 resolved. stats.html claims a check that does not exist; the ring branch lacks a failing fixture; `\b` slot match; the 743 px figure has no script | OBJECT | Probe or drop; fixture; exact tokens; record the method |
+| Critic: Provocateur (Debord) | Society of the Spectacle | R1 F1, F2, F4, F5 resolved; F3 resolved for links. "Speakers" leads to a testimonial; "five minutes" untested | PASS | Rename; drop the timing |
+| Critic: Inclusion (Holmes) | Mismatch | R1 F1–F3 resolved. Bare unglossed on the phone; phone visual order differs from DOM order | PASS | Gloss; DOM order |
+| Critic: Usability (Krug) | Don't Make Me Think | Five-second test passes for person and agent. Phone switches unlabelled; sparse miniatures | PASS | Labels; zoom |
+| Critic: Craft (Bringhurst) | Elements of Typographic Style | R1 F1–F3, F5 repaired. Step numerals past the margin on the phone; widows; .chk about 80 characters; 17 sizes | PASS | Fixes; a scale |
+| Critic: Provocateur (Shklovsky) | Art as Technique | R1 request answered: Bare on the first screen; the built frame holding bare parts makes conventions visible | PASS | Optional: readable tags on hover |
+
+### Resolutions R2
+
+All of these are carried into SolutionsAsService/website-toolkit (its DESIGN-LOG, M5), not applied here:
+
+| Finding | Resolution |
+|---|---|
+| Cairo: stats claim without a probe; ring fixture; `\b` slot match | DEFERRED: fixed in website-toolkit M5 |
+| Debord: Speakers; five minutes | DEFERRED: fixed in website-toolkit M5 |
+| Holmes + Krug: phone gloss and labels; DOM order | DEFERRED: fixed in website-toolkit M5 |
+| Bringhurst: numerals, widows, measure | DEFERRED: fixed in website-toolkit M5 |
+| Bringhurst: type scale; Shklovsky: readable Bare tags | DEFERRED: open in website-toolkit |
+
+## Stop test
+
+- **S1:** met. All items are TAKEN or DEFERRED with a reason.
+- **S2:** not met. R2 had 6 PASS and 1 OBJECT (Cairo); Mace was not reported and Walters was not convened.
+- **S3:** not met.
+- **S4:** met. M10 put Bare on the sprue. Measured: 18 of 18 miniatures X-rayed by one press, and the control sits on the first screen at both widths (the desktop frame bar is at y≈100).
+- **S5:** met.
+  - venturi2 -.-> sullivan: applied (M6, M10).
+  - hara -.-> munariDA: applied (M4).
+
+**The run is incomplete under the owner's close.**
+
+## Open frontier
+
+1. In website-toolkit: a type scale, readable Bare tags, a walkthrough with a real first-time learner, and a full R2 on the merged state.
+
+## Double loop
+
+The panel's blind spot was the colour. Eight seats judged access, claims, type and estrangement for three rounds. No seat was briefed on colour as expression, so "boring colours" reached only the owner. **Graph amendment:** when a run's Stance is not about colour, seat one colour authority anyway (a seat built from Interaction of Color (Josef Albers) or Chromophobia (David Batchelor)). The roster has no colour seat today; add one.
+
+**Process amendment:** a seat's file can fail to appear without any error (Mace R2). Check the panel directory before closing, and record what is missing.
+
+## Human grade
+
+- **Grade:** B+
+- **Date:** 2026-11-11
+- **Words (verbatim):** "Site repo is b plus good design boring colors do a new color version in this repo"
+- **What it rewards:** the design (kit, sprue, Bare, sandbox, registry).
+- **What it punishes:** the palette (beige, orange, blue). The follow-up is website-toolkit.
