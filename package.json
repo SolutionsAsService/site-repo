@@ -1,0 +1,12 @@
+{
+  "name": "site-repo",
+  "private": true,
+  "type": "module",
+  "description": "Copy-paste website parts in plain HTML and CSS, with a sandbox, templates and a JSON registry for agents.",
+  "scripts": {
+    "build": "node build/build.mjs",
+    "check": "node build/check.mjs",
+    "all": "node build/build.mjs && node build/check.mjs && node build/build.mjs"
+  },
+  "license": "MIT"
+}

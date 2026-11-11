@@ -1,7 +1,7 @@
 # Contributing to site-repo
 
 Thanks for taking a look. Contributions of every size are welcome: bug reports, typo fixes,
-docs, new features, data corrections and ideas.
+docs, new parts, fixes to existing parts and ideas.
 
 ## Ways to help
 
@@ -13,28 +13,29 @@ docs, new features, data corrections and ideas.
 
 ## Getting set up
 
-This is a static site: no build step.
+The parts are plain HTML and need nothing. The site around them is built by a small Node script with no dependencies, and checked with Playwright.
 
 ```bash
 git clone https://github.com/SolutionsAsService/site-repo
 cd site-repo
-npx serve .
+npm run all        # build, check, build again (the check needs Playwright's Chromium)
+npx serve site     # or any static server
 ```
 
-Then open the printed localhost URL. Keep links relative so the site still deploys from any host.
+To add or change a part, follow the format in [AGENTS.md](AGENTS.md). A part must pass `npm run check` at 375, 768 and 1280 px in every theme before it is merged. Keep links relative so the site deploys from any host.
 
 ## Making a change
 
 1. Fork the repo and create a branch from the default branch: `git checkout -b fix/short-description`.
 2. Keep the change focused on one thing, and match the style of the surrounding code.
-3. Test what you changed (run it, run the tests if there are any) and note how you checked it.
+3. Run `npm run all` and make sure every check passes.
 4. Write a clear commit message in the imperative: `Fix crash when config is missing`.
 5. Open a pull request that says what changed and why, and link the issue it closes.
 
 ## Pull request checklist
 
 - [ ] The change does one thing and the description explains it.
-- [ ] It runs locally, and existing tests still pass.
+- [ ] `npm run all` passes (every part, every template, the site).
 - [ ] Docs or README are updated if behaviour changed.
 - [ ] No secrets, API keys or personal data are committed.
 

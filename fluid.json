@@ -1,0 +1,5 @@
+{
+  "project": "site-repo",
+  "static_dir": "site",
+  "routes": [{ "pattern": "/", "target": "static" }]
+}

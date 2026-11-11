@@ -1,0 +1,6 @@
+{
+  "paper":  { "label": "Paper",  "--sr-ink": "#17181c", "--sr-muted": "#575c66", "--sr-paper": "#fbfaf7", "--sr-surface": "#efece5", "--sr-line": "#d6d2c8", "--sr-accent": "#1f4fd8", "--sr-accent-ink": "#ffffff", "--sr-radius": "10px", "--sr-font-display": "Georgia, \"Times New Roman\", serif" },
+  "night":  { "label": "Night",  "--sr-ink": "#eceae4", "--sr-muted": "#a9adb7", "--sr-paper": "#14161b", "--sr-surface": "#1e2129", "--sr-line": "#343845", "--sr-accent": "#8fb0ff", "--sr-accent-ink": "#0d1020", "--sr-radius": "10px", "--sr-font-display": "Georgia, \"Times New Roman\", serif" },
+  "citrus": { "label": "Citrus", "--sr-ink": "#1c1a12", "--sr-muted": "#5b5643", "--sr-paper": "#fffbea", "--sr-surface": "#f6edc4", "--sr-line": "#e0d49c", "--sr-accent": "#b23c00", "--sr-accent-ink": "#ffffff", "--sr-radius": "22px", "--sr-font-display": "system-ui, -apple-system, \"Segoe UI\", sans-serif" },
+  "slab":   { "label": "Slab",   "--sr-ink": "#000000", "--sr-muted": "#3d3d3d", "--sr-paper": "#ffffff", "--sr-surface": "#ececec", "--sr-line": "#000000", "--sr-accent": "#000000", "--sr-accent-ink": "#ffffff", "--sr-radius": "0px", "--sr-font-display": "\"Courier New\", ui-monospace, monospace" }
+}
